@@ -7,24 +7,27 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration.Yaml;
 using Discord.Commands;
 using Discord;
+using Microsoft.Extensions.Configuration.Xml;
 
 namespace DNet_V3_Tutorial
 {
+   
     public class program
     {
-        private DiscordSocketClient _client;        
-        
+        private DiscordSocketClient _client;
+    
         // Program entry point
         public static Task Main(string[] args) => new program().MainAsync();
 
 
         public async Task MainAsync()
         {
+            
             var config = new ConfigurationBuilder()
             // this will be used more later on
             .SetBasePath(AppContext.BaseDirectory)
             // I chose using YML files for my config data as I am familiar with them
-            .AddYamlFile("config.yml")
+            .AddXmlFile("config.xml")
             .Build();
             
             using IHost host = Host.CreateDefaultBuilder()
@@ -85,14 +88,14 @@ namespace DNet_V3_Tutorial
                 // If running the bot with DEBUG flag, register all commands to guild specified in config
                 if (IsDebug())
                     // Id of the test guild can be provided from the Configuration object
-                    await commands.RegisterCommandsToGuildAsync(UInt64.Parse(config["testGuild"]), true);
+                    await commands.RegisterCommandsToGuildAsync(UInt64.Parse(config.GetSection("testGuild").Value),true);
                 else
                     // If not debug, register commands globally
                     await commands.RegisterCommandsGloballyAsync(true);
             };
 
 
-            await _client.LoginAsync(Discord.TokenType.Bot, config["tokens:discord"]);
+            await _client.LoginAsync(Discord.TokenType.Bot, config.GetSection("tokens")["discord"]);
             await _client.StartAsync();
 
             await Task.Delay(-1);

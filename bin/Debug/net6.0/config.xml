@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <tokens>
+    <discord>MTA3NTY2MzA5NjQzNTE5NTkyNA.Gh3AEc.ysfhAOSpJJYbM72YmTSzi7GZxFmf8CORGryw9Q</discord>
+    <openAI>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</openAI>
+  </tokens>
+  <testGuild>559550351531835393</testGuild>
+  <askcount>0</askcount>
+  <prefix>!</prefix>
+</configuration>

@@ -3,6 +3,7 @@ using Discord.Interactions;
 using Discord.WebSocket;
 using System.Reflection;
 
+
 namespace DNet_V3_Tutorial
 {
     public class InteractionHandler
@@ -10,6 +11,9 @@ namespace DNet_V3_Tutorial
         private readonly DiscordSocketClient _client;
         private readonly InteractionService _commands;
         private readonly IServiceProvider _services;
+        private readonly int maxAsksPerDay = 50;
+        private int today;
+        private int askCount;
 
         // Using constructor injection
         public InteractionHandler(DiscordSocketClient client, InteractionService commands, IServiceProvider services)
@@ -17,8 +21,8 @@ namespace DNet_V3_Tutorial
             _client = client;
             _commands = commands;
             _services = services;
+            today = DateTime.Now.DayOfYear;
         }
-
         public async Task InitializeAsync()
         {
             // Add the public modules that inherit InteractionModuleBase<T> to the InteractionService
@@ -31,6 +35,21 @@ namespace DNet_V3_Tutorial
             _commands.SlashCommandExecuted += SlashCommandExecuted;
             _commands.ContextCommandExecuted += ContextCommandExecuted;
             _commands.ComponentCommandExecuted += ComponentCommandExecuted;
+
+        }
+
+        public bool isValidAsk()
+        {
+            if(today != DateTime.Now.DayOfYear)
+            {
+                askCount = 0;
+                today = DateTime.Now.DayOfYear;
+            }
+            if(askCount >= 1) 
+            {
+                return false;
+            }
+            return true;
         }
 
         private Task ComponentCommandExecuted(ComponentCommandInfo arg1, Discord.IInteractionContext arg2, IResult arg3)
@@ -45,7 +64,10 @@ namespace DNet_V3_Tutorial
 
         private Task SlashCommandExecuted(SlashCommandInfo arg1, Discord.IInteractionContext arg2, IResult arg3)
         {
-            return Task.CompletedTask;
+            
+                return Task.CompletedTask;
+            
+            
         }
         private async Task HandleInteraction(SocketInteraction arg)
         {
